@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ophix-creds"
+version = "2026.03.23.01"
+description = "Credentials domain plugin for Ophix Project Servers"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Ophix Project" }
+]
+dependencies = [
+    "ophix-server-base>=2026.03.23.01",
+]
+
+[project.entry-points."ophix.plugins"]
+ophix_creds = "ophix_creds"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ophix_creds = [
+    "docs/**/*",
+    "migrations/**/*",
+]
