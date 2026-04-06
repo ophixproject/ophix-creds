@@ -67,7 +67,7 @@ def linked_credentials(self, obj):
     items = []
     for cc in links:
         label = cc.credential.name
-        if cc.enabled:
+        if cc.enabled and cc.credential.enabled:
             items.append(f"• {label}")
         else:
             items.append(
@@ -128,7 +128,7 @@ class CredentialAdmin(admin.ModelAdmin):
         items = []
         for cc in links:
             label = cc.client.name
-            if cc.enabled:
+            if cc.enabled and cc.client.enabled:
                 items.append(f"• {label}")
             else:
                 items.append(
