@@ -8,7 +8,7 @@ from django.contrib import admin
 from django.conf import settings
 from django import forms
 from django.db import models
-from django.utils.html import format_html
+from django.utils.html import format_html, mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from .models import Credential, ClientCredential
@@ -79,7 +79,7 @@ def linked_credentials(self, obj):
 
     return format_html(
         "<div style='display: flex; flex-wrap: wrap; gap: 0.5em; white-space: normal;'>{}</div>",
-        format_html(" ".join(items)),
+        mark_safe(" ".join(items)),
     )
 
 linked_credentials.short_description = _("Authorised Credentials")

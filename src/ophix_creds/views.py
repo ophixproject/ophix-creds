@@ -25,6 +25,7 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
 
 from ophix.core.auth import ClientTokenAuthentication
+from ophix.core.audit import record_access
 from ophix.core.utils import assert_artifact_access, err_response
 
 from .models import Credential, ClientCredential
@@ -52,10 +53,11 @@ class CredentialDetailView(APIView):
         except Credential.DoesNotExist:
             raise Http404
 
-        assert_artifact_access(
+        access = assert_artifact_access(
             client, credential, ClientCredential, "credential"
         )
 
+        record_access(access, "GET")
         return Response(CredentialSerializer(credential).data)
 
     # ------------------------------------------------------------------
@@ -81,7 +83,7 @@ class CredentialDetailView(APIView):
         )
 
         # Creator gets full permissions on the new credential.
-        ClientCredential.objects.create(
+        access = ClientCredential.objects.create(
             client=client,
             credential=credential,
             enabled=True,
@@ -90,6 +92,7 @@ class CredentialDetailView(APIView):
             can_share=False,
         )
 
+        record_access(access, "POST")
         return Response({"status": "created"}, status=status.HTTP_201_CREATED)
 
     # ------------------------------------------------------------------
