@@ -11,6 +11,72 @@ Each credential is a named object containing arbitrary JSON (`secret_json`). Acc
 
 ---
 
+## Encryption at rest
+
+The `secret_json` field is encrypted at rest in the database using Fernet symmetric encryption (AES-128-CBC with HMAC-SHA256). The encrypted token is what is stored in the database column — the plaintext secret is never written to disk in readable form.
+
+Encryption and decryption happen transparently: the admin interface, the API, and client tools all work with the plaintext JSON value as normal.
+
+### Initial setup
+
+Before running `migrate` for the first time, generate an encryption key:
+
+```bash
+ophix-manage generate_cred_key
+```
+
+This prints a key. Add it to your `.env`:
+
+```ini
+CRED_ENCRYPTION_KEY=<generated key>
+```
+
+Then run migrations:
+
+```bash
+ophix-manage migrate
+```
+
+The migration encrypts any existing plaintext records. If `CRED_ENCRYPTION_KEY` is not set, the migration will stop with a clear error before making any changes.
+
+### Upgrading an existing deployment
+
+If you are adding encryption to a credential server that already has data:
+
+1. `ophix-manage generate_cred_key` — generate and record the key
+2. Add `CRED_ENCRYPTION_KEY=<key>` to `.env`
+3. `ophix-manage migrate` — encrypts all existing `secret_json` values in place
+4. Restart the server
+
+### Key management
+
+- The key is a 32-byte Fernet key, stored as URL-safe base64 in `.env`
+- **Back up the key separately from the database.** Losing the key means losing access to all stored credentials — the ciphertext cannot be recovered without it
+
+### Key rotation
+
+To replace the encryption key and re-encrypt all credentials in place:
+
+```bash
+ophix-manage rotate_cred_key
+```
+
+This generates a new key automatically. To supply your own:
+
+```bash
+ophix-manage rotate_cred_key --new-key <key>
+```
+
+The command:
+
+1. Re-encrypts all credentials in a **single database transaction** — if anything fails, the database rolls back and the current key remains valid
+2. Prints the new key to stdout **before** updating `.env` — if the file write fails, you can set `CRED_ENCRYPTION_KEY` manually without losing any data
+3. Updates `CRED_ENCRYPTION_KEY` in `.env` after the transaction commits
+
+After rotation, restart the server for the new key to take effect. Use `--no-input` for scripted/scheduled rotation.
+
+---
+
 ## cred-client
 
 `cred-client` is the Tier 1 command-line client for the Ophix credential server. Configuration is stored in `.cred.env`.
@@ -88,7 +154,7 @@ When you link a client to a credential, the `enabled` checkbox on the link contr
 Tier 2 clients (scripts and services that consume credentials) import directly from the client library. They do not communicate with the server directly.
 
 ```python
-from ophyx_cred_client import get_cred
+from ophix_cred_client import get_cred
 
 # Fetch the credential whose name is stored in the DB_PROD_CRED_NAME env var
 secret = get_cred("DB_PROD_CRED_NAME")
@@ -171,10 +237,11 @@ Requires `can_delete` on the link **and** `ENABLE_ARTIFACT_DELETE=true` in the s
 
 ## Server settings
 
-The credentials plugin has no plugin-specific settings. The following base settings from `ophix-server-base` are most relevant to a credential server deployment. Run `ophix-manage generate_deploy_config --env` to generate a sample `.env` with all variables and their descriptions.
+Run `ophix-manage generate_deploy_config --env` to generate a sample `.env` with all variables and their descriptions.
 
 | Variable | Default | Description |
 | --- | --- | --- |
+| `CRED_ENCRYPTION_KEY` | _(required)_ | Fernet encryption key for `secret_json` at-rest encryption. Generate with `ophix-manage generate_cred_key`. Must be set before running `migrate`. |
 | `ENABLE_ARTIFACT_DELETE` | `False` | Allow clients to delete credentials they own. Disabled by default — enable only if client-driven deletion is required. |
 | `AUTH_LEAK_INFO` | `False` | Include error detail in API responses. Set to `True` during development only; `False` in production prevents auth failure fingerprinting. |
 | `MINIMUM_TOKEN_ROTATE_TIME` | `3600` | Minimum seconds between token rotations. Prevents rotation abuse. Default is 1 hour. |

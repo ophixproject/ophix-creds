@@ -13,12 +13,13 @@ ClientCredential
 
 from django.db import models
 from ophix.core.models import ClientArtifactBase
+from .fields import EncryptedJSONField
 
 
 class Credential(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
-    secret_json = models.JSONField(default=dict)
+    secret_json = EncryptedJSONField(default=dict)
     enabled = models.BooleanField(default=True)
     updated_at = models.DateTimeField(auto_now=True)
 

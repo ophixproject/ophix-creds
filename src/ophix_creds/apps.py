@@ -5,6 +5,7 @@ class OphixCredsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "ophix_creds"
     verbose_name = "Credentials"
+    is_ophix_domain = True
 
     def ready(self):
         from ophix.core.admin import ClientAdmin
