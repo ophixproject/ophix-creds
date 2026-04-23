@@ -107,6 +107,20 @@ to authenticate and fetch credentials.
 
 ---
 
+## Documentation
+
+If `ophix-docs` is installed, documentation is loaded automatically during `run_install`.
+To load or refresh docs manually after an upgrade:
+
+```bash
+ophix-manage ophix_docs_update --include-app-docs ophix.core,ophix_creds,ophix_docs,ophix_theme_tools
+```
+
+See [ophix-docs](https://github.com/ophixproject/ophix-docs) for the full list of
+documentation management commands.
+
+---
+
 ## Themes
 
 Install a theme alongside this plugin to customise the admin interface appearance.
