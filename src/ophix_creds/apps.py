@@ -1,10 +1,11 @@
 from django.apps import AppConfig
+from django.utils.translation import gettext_lazy as _
 
 
 class OphixCredsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "ophix_creds"
-    verbose_name = "Credentials"
+    verbose_name = _("Credentials")
     is_ophix_domain = True
 
     def ready(self):
