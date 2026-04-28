@@ -140,7 +140,7 @@ class CredentialAdmin(admin.ModelAdmin):
 
         return format_html(
             "<div style='display: flex; flex-wrap: wrap; gap: 0.5em; white-space: normal;'>{}</div>",
-            format_html(" ".join(items)),
+            mark_safe(" ".join(items)),
         )
 
     linked_clients.short_description = _("Authorised Clients")
