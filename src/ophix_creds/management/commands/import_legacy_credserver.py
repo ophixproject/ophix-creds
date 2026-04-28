@@ -48,6 +48,7 @@ import os
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.utils import timezone
 
 
 class Command(BaseCommand):
@@ -196,7 +197,7 @@ class Command(BaseCommand):
                     venv_path=venv_path,
                     enabled=bool(enabled),
                     api_token=token,
-                    last_token_rotation=last_rot,
+                    last_token_rotation=timezone.make_aware(last_rot) if last_rot and timezone.is_naive(last_rot) else last_rot,
                 )
                 self.stdout.write(self.style.SUCCESS(f"  Imported: {cname}\n"))
                 counters["clients"] += 1
