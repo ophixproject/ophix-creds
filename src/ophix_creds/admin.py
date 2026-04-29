@@ -168,8 +168,6 @@ if getattr(settings, "SHOW_CLIENT_ARTIFACT_MODEL", False):
         list_filter = ('enabled', 'client__host', 'client', 'credential')
         search_fields = ('client__name', 'credential__name', 'notes')
         actions = None
-        verbose_name = "Client-Credential Link"
-        verbose_name_plural = "Client-Credential Links"
 
         def short_notes(self, obj):
             return (obj.notes[:50] + '…') if obj.notes and len(obj.notes) > 50 else obj.notes
