@@ -1,7 +1,7 @@
 ---
 title: Credentials
 slug: credentials
-order: 10
+order: 100
 section: Credentials
 ---
 

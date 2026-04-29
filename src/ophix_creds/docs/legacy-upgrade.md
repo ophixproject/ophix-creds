@@ -1,7 +1,7 @@
 ---
 title: Upgrading from Legacy credserver
 slug: legacy-upgrade
-order: 99
+order: 110
 section: Credentials
 ---
 
