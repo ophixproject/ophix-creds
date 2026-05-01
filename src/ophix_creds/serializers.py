@@ -8,6 +8,8 @@ from .models import Credential
 
 
 class CredentialSerializer(serializers.ModelSerializer):
+    secret_json = serializers.JSONField()
+
     class Meta:
         model = Credential
         fields = ["name", "description", "secret_json", "updated_at"]

@@ -62,12 +62,36 @@ class EncryptedJSONField(models.TextField):
         decrypted = _get_fernet().decrypt(value.encode()).decode()
         return json.loads(decrypted)
 
+    def to_python(self, value):
+        # TextField.to_python() calls str() on non-strings, which turns a dict
+        # into a Python repr string (single-quoted, not valid JSON).  Override
+        # to pass already-decoded types through unchanged and parse JSON strings.
+        if value is None or isinstance(value, (dict, list, int, float, bool)):
+            return value
+        if isinstance(value, str):
+            try:
+                return json.loads(value)
+            except (ValueError, TypeError):
+                from django.core.exceptions import ValidationError
+                raise ValidationError(
+                    "Enter a valid JSON value.", code="invalid"
+                )
+        return value
+
     def get_prep_value(self, value):
         if value is None:
             return None
-        if not isinstance(value, str):
-            value = json.dumps(value)
-        return _get_fernet().encrypt(value.encode()).decode()
+        # Always round-trip through json.loads/json.dumps to normalise the
+        # value and guard against Python repr strings arriving here.
+        if isinstance(value, str):
+            try:
+                value = json.loads(value)
+            except (ValueError, TypeError):
+                raise ValueError(
+                    f"EncryptedJSONField received a non-JSON string: {value!r}"
+                )
+        plaintext = json.dumps(value)
+        return _get_fernet().encrypt(plaintext.encode()).decode()
 
     def formfield(self, **kwargs):
         # Use Django's JSONFormField so the admin displays and validates JSON

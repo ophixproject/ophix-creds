@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ophix-creds"
-version = "2026.05.01.01"
+version = "2026.05.01.02"
 description = "Credentials domain plugin for Ophix Project Servers"
 readme = "README.md"
 requires-python = ">=3.10"
