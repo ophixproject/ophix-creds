@@ -130,11 +130,35 @@ cred-client check --name db_prod           # check by credential name
 
 ### Importing credentials
 
+The `import` command uploads a JSON file as a new credential. The credential name can be supplied three ways:
+
+**`--name` only** — creates the credential with the given name:
+
 ```bash
 cred-client import --name db_prod --input-file db_prod.json
-cred-client import --name db_prod --input-file db_prod.json --overwrite
-echo '{"HOST":"db.internal","PASS":"secret"}' | cred-client import --name db_prod --input-file -
 ```
+
+**`--env` only** — reads the credential name from the named mapping in `.cred.env`. Use this when the mapping already exists and you want to refresh the credential:
+
+```bash
+cred-client import --env DB_PROD_CRED_NAME --input-file db_prod.json
+```
+
+**`--name` and `--env` together** — writes the `ENV=name` mapping to `.cred.env` and creates the credential in one step. This is the recommended workflow when setting up a new credential that Tier 2 clients will consume via `get_cred()`:
+
+```bash
+cred-client import --name db_prod --env DB_PROD_CRED_NAME --input-file db_prod.json
+```
+
+If `DB_PROD_CRED_NAME` is already present in `.cred.env` with a different name, the command refuses with an error — edit `.cred.env` manually if you intend to remap it.
+
+**Updating an existing credential:**
+
+```bash
+cred-client import --name db_prod --input-file db_prod.json --overwrite
+```
+
+`--overwrite` updates the credential in place. Requires `can_update` on the client-credential link.
 
 ---
 
