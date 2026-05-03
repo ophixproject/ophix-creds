@@ -116,8 +116,11 @@ Validates the new token before overwriting `.cred.env`. Safe to run from cron.
 ### Fetching credentials
 
 ```bash
-cred-client fetch db_prod         # prints JSON to stdout
+cred-client fetch --name db_prod              # fetch by name, prints JSON to stdout
+cred-client fetch --var DB_PROD_CRED_NAME     # look up name from .cred.env, then fetch
 ```
+
+`--name` and `--var` are mutually exclusive; one is required.
 
 ### Verifying retrieval
 
@@ -130,7 +133,7 @@ cred-client check --name db_prod           # check by credential name
 
 ### Importing credentials
 
-The `import` command uploads a JSON file as a new credential. The credential name can be supplied three ways:
+The `import` command uploads a JSON file as a new credential. The credential name is resolved from the flags provided:
 
 **`--name` only** — creates the credential with the given name:
 
@@ -138,16 +141,16 @@ The `import` command uploads a JSON file as a new credential. The credential nam
 cred-client import --name db_prod --input-file db_prod.json
 ```
 
-**`--env` only** — reads the credential name from the named mapping in `.cred.env`. Use this when the mapping already exists and you want to refresh the credential:
+**`--var` only** — reads the credential name from the named mapping in `.cred.env`. Use this when the mapping already exists and you want to refresh the credential:
 
 ```bash
-cred-client import --env DB_PROD_CRED_NAME --input-file db_prod.json
+cred-client import --var DB_PROD_CRED_NAME --input-file db_prod.json
 ```
 
-**`--name` and `--env` together** — writes the `ENV=name` mapping to `.cred.env` and creates the credential in one step. This is the recommended workflow when setting up a new credential that Tier 2 clients will consume via `get_cred()`:
+**`--name` and `--var` together** — writes the `VAR=name` mapping to `.cred.env` and creates the credential in one step. This is the recommended workflow when setting up a new credential that Tier 2 clients will consume via `get_cred()`:
 
 ```bash
-cred-client import --name db_prod --env DB_PROD_CRED_NAME --input-file db_prod.json
+cred-client import --name db_prod --var DB_PROD_CRED_NAME --input-file db_prod.json
 ```
 
 If `DB_PROD_CRED_NAME` is already present in `.cred.env` with a different name, the command refuses with an error — edit `.cred.env` manually if you intend to remap it.
