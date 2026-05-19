@@ -29,6 +29,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 ophix_creds = [
+    "OPHIX_RELEASE_NOTES.md",
     "docs/**/*",
     "locale/**/*",
     "migrations/**/*",
