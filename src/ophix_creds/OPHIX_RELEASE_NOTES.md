@@ -1,6 +1,6 @@
 # Ophix Creds Release Notes
 
-## Unreleased
+## 2026.05.22.01
 
 - Removed `import_legacy_credserver` management command — legacy migration is
   complete and the command is no longer needed.
