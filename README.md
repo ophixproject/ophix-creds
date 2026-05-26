@@ -10,17 +10,19 @@ the client — they are fetched on demand and used in memory only.
 
 ## Installation
 
-Install alongside [ophix-server-base](https://github.com/ophixproject/ophix-server-base):
-
 ```bash
-pip install ophix-server-base ophix-creds
+pip install ophix-creds
 ```
 
-With documentation, theme tools, and an optional theme:
+Recommended extras:
 
 ```bash
-pip install ophix-server-base ophix-creds ophix-docs ophix-theme-tools ophix-codemirror ophix-theme-example
+pip install ophix-creds ophix-docs venv-cmds
 ```
+
+- `ophix-docs` — inline documentation in the admin UI
+- `venv-cmds` — lists available venv commands and checks for package updates
+- A theme pack (e.g. `ophix-theme-example`) can be added for custom branding; the built-in Ophix theme is active on fresh installs by default
 
 See [Guided installation](#guided-installation) below.
 
