@@ -34,7 +34,7 @@ The recommended approach is a **side-by-side migration**: keep the old server ru
 Follow the standard installation guide — fresh venv, fresh database:
 
 ```bash
-pip install ophix-server-base ophix-creds
+pip install ophix-creds
 ophix-manage configure_install credserver
 ophix-manage run_install credserver
 sudo bash credserver_sudo_install.sh
