@@ -43,6 +43,14 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        try:
+            self._handle(*args, **options)
+        except KeyboardInterrupt:
+            self.stdout.write("")
+            self.stdout.write("Cancelled.")
+            raise SystemExit(1)
+
+    def _handle(self, *args, **options):
         from cryptography.fernet import Fernet, InvalidToken
 
         # --- Validate old key ---

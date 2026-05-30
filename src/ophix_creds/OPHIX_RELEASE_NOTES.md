@@ -1,5 +1,9 @@
 # Ophix Creds Release Notes
 
+## 2026.05.30.03
+
+- `rotate_cred_key` now handles Ctrl+C gracefully — prints "Cancelled." instead of a stack trace.
+
 ## 2026.05.30.02
 
 - Added inline documentation page "Credential Backup and Migration" covering
