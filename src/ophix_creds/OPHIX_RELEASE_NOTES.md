@@ -1,5 +1,12 @@
 # Ophix Creds Release Notes
 
+## 2026.05.30.02
+
+- Added inline documentation page "Credential Backup and Migration" covering
+  `export_creds` and `import_creds`, including restore dependency order,
+  passphrase encryption, the distinction between transport encryption and
+  `CRED_ENCRYPTION_KEY`, and full restore workflow.
+
 ## 2026.05.30.01
 
 - Added `export_creds` management command — exports Credential records to JSON.
