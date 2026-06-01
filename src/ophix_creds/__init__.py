@@ -1,3 +1,6 @@
+plugin_category = "module"
+plugin_sort = 100
+
 default_app_config = "ophix_creds.apps.OphixCredsConfig"
 
 
