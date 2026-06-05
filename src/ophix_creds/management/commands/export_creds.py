@@ -81,13 +81,20 @@ class Command(BaseCommand):
             metavar="FILE",
             help="Destination file path.",
         )
-        parser.add_argument(
+        passphrase_group = parser.add_mutually_exclusive_group()
+        passphrase_group.add_argument(
             "--passphrase",
             nargs="?",
             const="",
             metavar="PASSPHRASE",
             default=None,
             help="Encrypt secret values using a passphrase-derived Fernet key. Omit the value to be prompted securely (input is hidden).",
+        )
+        passphrase_group.add_argument(
+            "--passphrase-env",
+            metavar="ENVVAR",
+            default=None,
+            help="Read the passphrase from the named environment variable (for automated use).",
         )
         parser.add_argument(
             "--include-client-links",
@@ -110,7 +117,14 @@ class Command(BaseCommand):
 
         output_path    = Path(options["output_file"])
         passphrase     = options["passphrase"]
-        if passphrase == "":
+        passphrase_env = options["passphrase_env"]
+        if passphrase_env:
+            passphrase = os.environ.get(passphrase_env)
+            if not passphrase:
+                raise CommandError(
+                    f"Environment variable '{passphrase_env}' is not set or empty."
+                )
+        elif passphrase == "":
             import getpass
             while True:
                 passphrase = getpass.getpass("Passphrase: ")
