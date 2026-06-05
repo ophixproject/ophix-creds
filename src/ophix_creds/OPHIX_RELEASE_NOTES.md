@@ -1,5 +1,10 @@
 # Ophix Creds Release Notes
 
+## 2026.06.05.03
+
+- `export_creds`: export file now includes a `meta` block with `created_at`, `server_name`, `server_version`, `hostname`, `domain`, `command`, `run_by`, `login_user`, and `ssh_origin`.
+- `export_creds`, `import_creds`: `--passphrase` now accepts no value to prompt securely (export confirms twice); `--passphrase-env ENVVAR` reads the passphrase from an environment variable for automated use. Both options are mutually exclusive.
+
 ## 2026.05.30.03
 
 - `rotate_cred_key` now handles Ctrl+C gracefully — prints "Cancelled." instead of a stack trace.

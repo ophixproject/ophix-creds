@@ -40,6 +40,30 @@ def _derive_key(passphrase: str, salt: bytes) -> bytes:
     return base64.urlsafe_b64encode(kdf.derive(passphrase.encode()))
 
 
+def _build_meta(domain: str, command: str) -> dict:
+    import datetime
+    import os
+    import pwd
+    import socket
+    from django.conf import settings
+    try:
+        run_by = pwd.getpwuid(os.getuid()).pw_name
+    except Exception:
+        run_by = os.environ.get("USER") or os.environ.get("LOGNAME")
+    ssh_raw = os.environ.get("SSH_CLIENT", "")
+    return {
+        "created_at":     datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "server_name":    getattr(settings, "SERVER_NAME", None),
+        "server_version": getattr(settings, "SERVER_VERSION", None),
+        "hostname":       socket.gethostname(),
+        "domain":         domain,
+        "command":        command,
+        "run_by":         run_by,
+        "login_user":     os.environ.get("SUDO_USER") or None,
+        "ssh_origin":     ssh_raw.split()[0] if ssh_raw else None,
+    }
+
+
 def _serialize(credential, fernet=None, include_links=False):
     secret_str = json.dumps(credential.secret_json)
     if fernet:
@@ -171,6 +195,7 @@ class Command(BaseCommand):
 
         payload = {
             "version":              1,
+            "meta":                 _build_meta("creds", "export_creds"),
             "encrypted":            fernet is not None,
             "salt":                 salt_b64,
             "include_client_links": include_links,
