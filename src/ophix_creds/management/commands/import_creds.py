@@ -52,9 +52,11 @@ class Command(BaseCommand):
         )
         parser.add_argument(
             "--passphrase",
+            nargs="?",
+            const="",
             metavar="PASSPHRASE",
             default=None,
-            help="Passphrase to decrypt secrets (required if file was exported with --passphrase).",
+            help="Passphrase to decrypt secrets (required if file was exported with --passphrase). Omit the value to be prompted securely (input is hidden).",
         )
         parser.add_argument(
             "--include-client-links",
@@ -77,6 +79,11 @@ class Command(BaseCommand):
 
         input_path    = Path(options["input_file"])
         passphrase    = options["passphrase"]
+        if passphrase == "":
+            import getpass
+            passphrase = getpass.getpass("Passphrase: ")
+            if not passphrase:
+                raise CommandError("Passphrase cannot be empty.")
         import_links  = options["include_client_links"]
         dry_run       = options["dry_run"]
         quiet         = options["quiet"]

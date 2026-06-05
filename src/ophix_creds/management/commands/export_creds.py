@@ -83,9 +83,11 @@ class Command(BaseCommand):
         )
         parser.add_argument(
             "--passphrase",
+            nargs="?",
+            const="",
             metavar="PASSPHRASE",
             default=None,
-            help="Encrypt secret values using a passphrase-derived Fernet key.",
+            help="Encrypt secret values using a passphrase-derived Fernet key. Omit the value to be prompted securely (input is hidden).",
         )
         parser.add_argument(
             "--include-client-links",
@@ -108,6 +110,16 @@ class Command(BaseCommand):
 
         output_path    = Path(options["output_file"])
         passphrase     = options["passphrase"]
+        if passphrase == "":
+            import getpass
+            while True:
+                passphrase = getpass.getpass("Passphrase: ")
+                if not passphrase:
+                    raise CommandError("Passphrase cannot be empty.")
+                confirm = getpass.getpass("Confirm passphrase: ")
+                if passphrase == confirm:
+                    break
+                self.stderr.write("Passphrases do not match — try again.")
         include_links  = options["include_client_links"]
         dry_run        = options["dry_run"]
         quiet          = options["quiet"]
