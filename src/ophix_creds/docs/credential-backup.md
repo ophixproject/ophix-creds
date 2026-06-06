@@ -30,22 +30,24 @@ If you are only restoring credentials themselves (no client links), `import_cred
 **Export with encrypted secrets (recommended):**
 
 ```bash
-ophix-manage export_creds --output-file creds.json --passphrase "your-passphrase"
+ophix-manage export_creds --output-file creds.json --passphrase 'your-passphrase'
 ```
 
 **Also export client access links:**
 
 ```bash
-ophix-manage export_creds --output-file creds.json --passphrase "your-passphrase" --include-client-links
+ophix-manage export_creds --output-file creds.json --passphrase 'your-passphrase' --include-client-links
 ```
 
 **Preview without writing:**
 
 ```bash
-ophix-manage export_creds --output-file creds.json --passphrase "your-passphrase" --dry-run
+ophix-manage export_creds --output-file creds.json --passphrase 'your-passphrase' --dry-run
 ```
 
 Without `--passphrase`, secrets are written as plaintext JSON. The command prints a warning. Treat an unencrypted export file as a credential store — restrict access accordingly.
+
+> **Note:** Always use single quotes around passphrases in bash. Double-quoted strings allow bash to interpret `!` as a history event, which corrupts a passphrase containing an exclamation mark.
 
 | Flag | Description |
 | --- | --- |
@@ -77,19 +79,19 @@ This transport encryption is independent of the server's `CRED_ENCRYPTION_KEY`. 
 ## Importing credentials
 
 ```bash
-ophix-manage import_creds --input-file creds.json --passphrase "your-passphrase"
+ophix-manage import_creds --input-file creds.json --passphrase 'your-passphrase'
 ```
 
 **Also import client links:**
 
 ```bash
-ophix-manage import_creds --input-file creds.json --passphrase "your-passphrase" --include-client-links
+ophix-manage import_creds --input-file creds.json --passphrase 'your-passphrase' --include-client-links
 ```
 
 **Preview without writing:**
 
 ```bash
-ophix-manage import_creds --input-file creds.json --passphrase "your-passphrase" --dry-run
+ophix-manage import_creds --input-file creds.json --passphrase 'your-passphrase' --dry-run
 ```
 
 The passphrase is validated against the first secret in the file before any database changes are made. An incorrect passphrase stops the import immediately.
@@ -113,8 +115,8 @@ For client links, referenced hosts and clients must already exist on the target 
 ```bash
 # 1. Export from the source server
 ophix-manage export_hosts --output-file hosts.json
-ophix-manage export_clients --output-file clients.json --passphrase "client-passphrase"
-ophix-manage export_creds --output-file creds.json --passphrase "cred-passphrase" --include-client-links
+ophix-manage export_clients --output-file clients.json --passphrase 'client-passphrase'
+ophix-manage export_creds --output-file creds.json --passphrase 'cred-passphrase' --include-client-links
 
 # 2. Transfer all three files to the target server
 
@@ -122,8 +124,8 @@ ophix-manage export_creds --output-file creds.json --passphrase "cred-passphrase
 
 # 4. Import on the target server in dependency order
 ophix-manage import_hosts --input-file hosts.json
-ophix-manage import_clients --input-file clients.json --passphrase "client-passphrase"
-ophix-manage import_creds --input-file creds.json --passphrase "cred-passphrase" --include-client-links
+ophix-manage import_clients --input-file clients.json --passphrase 'client-passphrase'
+ophix-manage import_creds --input-file creds.json --passphrase 'cred-passphrase' --include-client-links
 ```
 
 Fleet clients can reconnect and retrieve credentials immediately after the restore without re-registering or re-linking.
