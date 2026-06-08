@@ -28,8 +28,8 @@ classifiers = [
     "Topic :: System :: Systems Administration",
 ]
 dependencies = [
-    "ophix-server-base>=2026.05.26.01",
-    "ophix-codemirror>=2026.05.26.01",
+    "ophix-server-base>=2026.06.08.01",
+    "ophix-codemirror>=2026.06.05.01",
     "cryptography>=41.0",
 ]
 
