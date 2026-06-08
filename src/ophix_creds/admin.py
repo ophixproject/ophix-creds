@@ -11,6 +11,7 @@ from django.db import models
 from django.utils.html import format_html, mark_safe
 from django.utils.translation import gettext_lazy as _
 
+from ophix.core.admin import CleanSaveMessageMixin
 from .models import Credential, ClientCredential
 
 
@@ -90,7 +91,7 @@ linked_credentials.short_description = _("Authorised Credentials")
 # ============================================================
 
 @admin.register(Credential)
-class CredentialAdmin(admin.ModelAdmin):
+class CredentialAdmin(CleanSaveMessageMixin, admin.ModelAdmin):
     list_display = (
         'name',           # identity
         'description',    # human context
@@ -153,7 +154,7 @@ class CredentialAdmin(admin.ModelAdmin):
 if getattr(settings, "SHOW_CLIENT_ARTIFACT_MODEL", False):
 
     @admin.register(ClientCredential)
-    class ClientCredentialAdmin(admin.ModelAdmin):
+    class ClientCredentialAdmin(CleanSaveMessageMixin, admin.ModelAdmin):
         """
         Exists primarily for auditing and debugging.
         Day-to-day management should be done via inlines.
