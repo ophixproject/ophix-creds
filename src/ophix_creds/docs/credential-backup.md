@@ -142,3 +142,17 @@ The `CRED_ENCRYPTION_KEY` in `.env` controls at-rest encryption in the database.
 Both must be kept secure. If you lose `CRED_ENCRYPTION_KEY`, the credentials in the database cannot be recovered — the export file (if encrypted with a known passphrase) is the only recovery path.
 
 Back up the encryption key separately from the database dump.
+
+---
+
+## Scheduled backups
+
+`ophix-manage create_backup_script` generates `ophix-backup.sh` — a cron-ready wrapper that reads `BACKUP_TARGETS` and `BACKUP_TARGETS_ENCRYPTED` from `.env` and runs the corresponding export commands.
+
+Add to `.env` to include credentials in the scheduled backup:
+
+```ini
+BACKUP_TARGETS_ENCRYPTED=creds
+```
+
+Credentials contain secrets — always keep `BACKUP_PASSPHRASE` set when `creds` is in `BACKUP_TARGETS_ENCRYPTED`. The backup script logs a warning and exports without encryption if `BACKUP_PASSPHRASE` is absent.

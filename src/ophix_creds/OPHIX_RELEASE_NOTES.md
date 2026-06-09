@@ -1,5 +1,9 @@
 # Ophix Creds Release Notes
 
+## 2026.06.09.01
+
+- Added "Scheduled backups" section to `credential-backup.md` with recommended `.env` values.
+
 ## 2026.06.05.03
 
 - `export_creds`: export file now includes a `meta` block with `created_at`, `server_name`, `server_version`, `hostname`, `domain`, `command`, `run_by`, `login_user`, and `ssh_origin`.
