@@ -1,6 +1,6 @@
 # Ophix Creds Release Notes
 
-## Unreleased
+## 2026.07.07.01
 
 - `CRED_ENCRYPTION_KEY` is now written to `.env` with single-quote wrapping
   (`quote_mode="always"`), both at install time and during `rotate_cred_key`.
