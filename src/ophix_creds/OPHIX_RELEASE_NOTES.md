@@ -1,5 +1,12 @@
 # Ophix Creds Release Notes
 
+## Unreleased
+
+- `CRED_ENCRYPTION_KEY` is now written to `.env` with single-quote wrapping
+  (`quote_mode="always"`), both at install time and during `rotate_cred_key`.
+  Previously written unquoted; special shell characters in the value could corrupt
+  the key when the file was `source`d by the backup script.
+
 ## 2026.06.09.01
 
 - Added "Scheduled backups" section to `credential-backup.md` with recommended `.env` values.

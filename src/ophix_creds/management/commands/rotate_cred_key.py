@@ -155,7 +155,7 @@ class Command(BaseCommand):
         # --- Update .env ---
         env_file = find_dotenv(usecwd=True)
         if env_file:
-            set_key(env_file, "CRED_ENCRYPTION_KEY", new_key_str, quote_mode="never")
+            set_key(env_file, "CRED_ENCRYPTION_KEY", new_key_str, quote_mode="always")
             self.stdout.write(self.style.SUCCESS(f"Updated {env_file}\n"))
         else:
             self.stdout.write(

@@ -79,5 +79,5 @@ def install_run(conf, command):
         return
 
     env_file = find_dotenv(usecwd=True) or str(Path.cwd() / ".env")
-    set_key(env_file, "CRED_ENCRYPTION_KEY", key, quote_mode="never")
+    set_key(env_file, "CRED_ENCRYPTION_KEY", key, quote_mode="always")
     command.stdout.write(command.style.SUCCESS("  CRED_ENCRYPTION_KEY written to .env\n"))
