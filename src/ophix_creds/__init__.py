@@ -6,12 +6,16 @@ default_app_config = "ophix_creds.apps.OphixCredsConfig"
 
 def install_configure(conf, command):
     """
-    configure_install hook: generate or collect CRED_ENCRYPTION_KEY.
+    configure_install hook: generate or collect CRED_ENCRYPTION_KEY, and
+    contribute this domain's backup target.
 
     For a fresh install the key is auto-generated. For a venv rebuild on an
     existing database the operator must supply the original key, otherwise all
     stored credentials become unreadable.
     """
+    existing_enc_targets = conf.get("backup", "targets_encrypted_extra", fallback="")
+    conf.set("backup", "targets_encrypted_extra", ",".join(filter(None, [existing_enc_targets, "creds"])))
+
     if not conf.has_section("ophix_creds"):
         conf.add_section("ophix_creds")
 
