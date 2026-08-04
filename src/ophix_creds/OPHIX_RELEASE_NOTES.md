@@ -1,5 +1,14 @@
 # Ophix Creds Release Notes
 
+## Unreleased
+
+- `ophix_creds` gains `get_revisions_targets()`, declaring its own `creds` target for
+  `ophix-revisions` (if installed) to discover at runtime — no separate registration
+  needed anywhere else. Declared `stable=False` for now: `export_creds`'s Fernet
+  encryption is non-deterministic by design (random IV/timestamp per token, random KDF
+  salt per run), so `--stable` isn't meaningful here until a deterministic-encryption
+  scheme is built.
+
 ## 2026.07.07.01
 
 - `CRED_ENCRYPTION_KEY` is now written to `.env` with single-quote wrapping

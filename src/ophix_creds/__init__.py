@@ -85,3 +85,20 @@ def install_run(conf, command):
     env_file = find_dotenv(usecwd=True) or str(Path.cwd() / ".env")
     set_key(env_file, "CRED_ENCRYPTION_KEY", key, quote_mode="always")
     command.stdout.write(command.style.SUCCESS("  CRED_ENCRYPTION_KEY written to .env\n"))
+
+
+def get_revisions_targets():
+    """
+    Optional hook discovered by ophix-revisions (if installed). stable=False
+    until Phase B (deterministic encryption) lands — export_creds's Fernet
+    encryption is non-deterministic by design, so --stable isn't meaningful here yet.
+    """
+    return [
+        {
+            "name": "creds",
+            "app_label": "ophix_creds",
+            "export_command": "export_creds",
+            "encrypted": True,
+            "stable": False,
+        },
+    ]
