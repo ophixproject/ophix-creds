@@ -1,6 +1,6 @@
 # Ophix Creds Release Notes
 
-## Unreleased
+## 2026.08.04.01
 
 - `ophix_creds` gains `get_revisions_targets()`, declaring its own `creds` target for
   `ophix-revisions` (if installed) to discover at runtime — no separate registration
