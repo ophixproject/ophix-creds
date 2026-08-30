@@ -6,9 +6,10 @@
   (Client admin) and "Authorised Clients" (Credential admin) linked-artifact
   columns changed from an italic red-tinted mix
   (`color-mix(..., var(--admin-interface-delete-button-background-color) ...)`)
-  to the theme's dedicated disabled colour at a heavier weight
-  (`var(--admin-interface-disabled-color); font-weight: 600`), matching the
-  same treatment applied fleet-wide to changelist disabled rows.
+  to the theme's dedicated disabled colour at a heavier weight, italic kept
+  (`var(--admin-interface-disabled-color); font-weight: 600; font-style:
+  italic`), matching the same treatment applied fleet-wide to changelist
+  disabled rows.
 
 ## 2026.08.04.01
 

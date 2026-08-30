@@ -73,7 +73,7 @@ def linked_credentials(self, obj):
         else:
             items.append(
                 format_html(
-                    "• <span style='color: var(--admin-interface-disabled-color); font-weight: 600;'>{}</span>",
+                    "• <span style='color: var(--admin-interface-disabled-color); font-weight: 600; font-style: italic;'>{}</span>",
                     label,
                 )
             )
@@ -134,7 +134,7 @@ class CredentialAdmin(CleanSaveMessageMixin, admin.ModelAdmin):
             else:
                 items.append(
                     format_html(
-                        "• <span style='color: var(--admin-interface-disabled-color); font-weight: 600;'>{}</span>",
+                        "• <span style='color: var(--admin-interface-disabled-color); font-weight: 600; font-style: italic;'>{}</span>",
                         label,
                     )
                 )
