@@ -43,10 +43,10 @@ def _derive_key(passphrase: str, salt: bytes) -> bytes:
 def _build_meta(domain: str, command: str) -> dict:
     import datetime
     import os
-    import pwd
     import socket
     from django.conf import settings
     try:
+        import pwd
         run_by = pwd.getpwuid(os.getuid()).pw_name
     except Exception:
         run_by = os.environ.get("USER") or os.environ.get("LOGNAME")

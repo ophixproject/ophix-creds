@@ -1,5 +1,22 @@
 # Ophix Creds Release Notes
 
+## 2026.10.05.03
+
+- Added the `Programming Language :: Python :: 3.14` classifier, after real verification
+  (not a rubber-stamp add): a fresh Python 3.14 venv, a live `migrate` through this
+  package's full migration history, real HTTP requests against every registered admin
+  page (changelist with disabled-row styling, add-form, change-form), a real
+  `export_creds`/`import_creds` round trip, and `generate_cred_key`/`rotate_cred_key`
+  executed for real against a live database. All passed.
+- Found and fixed a real (non-3.14-specific) portability bug along the way: `_build_meta()`
+  in `export_creds.py` had `import pwd` as an unconditional top-level import inside a
+  function whose own surrounding `try/except` was clearly meant to tolerate exactly this
+  failure mode (the existing fallback to `os.environ.get("USER")`/`"LOGNAME"`). Since `pwd`
+  is POSIX-only, this crashed outright on any non-POSIX platform before the `try` could ever
+  run. Never a problem on production (Linux) servers, but it blocked `export_creds` from
+  running at all during local development/testing on Windows. Moved the import inside the
+  `try`.
+
 ## 2026.10.05.02
 
 - Dropped an unnecessary `str(...)` around the two `_()`-wrapped fleet-API error strings in
