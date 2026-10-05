@@ -16,18 +16,19 @@ See [installation.md](installation.md) for the full step-by-step guide — servi
 
 ## Routine upgrades
 
-```bash
-pip install --upgrade ophix-server-base ophix-creds
-ophix-manage migrate
-ophix-manage collectstatic --noinput
-sudo systemctl restart credserver
-```
-
-If the upgrade added new `.env` settings, pull them in first:
+The guided installer generates `ophixcredserver-update.sh` (Step 4 in
+[installation.md](installation.md)) — a single script that checks for and installs package
+updates, then runs `migrate`, `collectstatic`, `generate_config --append` (picks up any new
+`.env` settings automatically), refreshes documentation, and refreshes the Plugin Versions
+table. Run it as the service user, not root:
 
 ```bash
-ophix-manage generate_config --append
+./ophixcredserver-update.sh
 ```
+
+It finishes by printing a reminder to restart the service — it doesn't restart it for you.
+If you ever move the venv or change `INSTALL_DIR`, re-run `ophix-manage create_update_script`
+first to regenerate the script with the new paths.
 
 ---
 
