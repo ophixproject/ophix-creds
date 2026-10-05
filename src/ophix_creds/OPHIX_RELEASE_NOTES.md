@@ -1,5 +1,13 @@
 # Ophix Creds Release Notes
 
+## 2026.10.05.02
+
+- Dropped an unnecessary `str(...)` around the two `_()`-wrapped fleet-API error strings in
+  `views.py` added in `2026.10.05.01` — `err_response`'s own docstring in `ophix-server-base`
+  documents the canonical usage as plain `_(...)` with no explicit coercion (DRF's JSON encoder
+  already handles lazy translation proxies directly). No functional change; just matches the
+  documented pattern exactly, consistent with the same fix in `ophix-confs`.
+
 ## 2026.10.05.01
 
 - i18n regression sweep, ahead of this domain's own public-release pass: wrapped the

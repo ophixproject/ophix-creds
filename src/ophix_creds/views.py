@@ -70,7 +70,7 @@ class CredentialDetailView(APIView):
 
         if Credential.objects.filter(name=name).exists():
             return Response(
-                {"error": err_response(str(_("Credential already exists")), str(_("Conflict")))},
+                {"error": err_response(_("Credential already exists"), _("Conflict"))},
                 status=status.HTTP_409_CONFLICT,
             )
 
@@ -132,7 +132,7 @@ class CredentialDetailView(APIView):
 
         if not getattr(settings, "ENABLE_ARTIFACT_DELETE", False):
             return Response(
-                {"error": err_response(str(_("Credential deletion is disabled on this server.")))},
+                {"error": err_response(_("Credential deletion is disabled on this server."))},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
