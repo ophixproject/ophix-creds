@@ -107,11 +107,12 @@ source .cred-env/bin/activate
 ## Step 2 - Install the credserver and recommended add-ons
 
 ```bash
-pip install ophix-creds ophix-dbengine-mariadb ophix-docs ophix-codemirror ophix-client-management venv-cmds
+pip install ophix-creds ophix-dbengine-mariadb ophix-docs ophix-client-management venv-cmds
 ```
 
-- `ophix-server-base` is pulled in automatically as a dependency of `ophix-creds` - no need to
-  install it separately.
+- `ophix-server-base` and `ophix-codemirror` are both pulled in automatically as dependencies of
+  `ophix-creds` - no need to install either separately. `ophix-codemirror` is what gives the
+  `secret_json` field a syntax-aware JSON editor in the admin UI.
 - `ophix-dbengine-mariadb` installs the MariaDB/MySQL driver. Every database engine needs its
   matching `ophix-dbengine-*` plugin installed explicitly - none is bundled by default, MariaDB
   included. Swap it for a different one if you're using another engine:
@@ -123,9 +124,6 @@ pip install ophix-creds ophix-dbengine-mariadb ophix-docs ophix-codemirror ophix
   ```
 
 - `ophix-docs` - inline markdown documentation in the admin UI (recommended, optional).
-- `ophix-codemirror` - syntax-aware editor widget for the `secret_json` field in the admin UI
-  (recommended, optional) - without it the field falls back to a plain text box, still fully
-  functional.
 - `ophix-client-management` - fleet client status dashboard: token rotation health, client
   package versions, last-seen tracking (recommended, optional).
 - `venv-cmds` - lists the console commands available in this venv and checks installed packages
