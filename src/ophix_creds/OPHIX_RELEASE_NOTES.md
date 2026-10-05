@@ -1,5 +1,17 @@
 # Ophix Creds Release Notes
 
+## 2026.10.05.01
+
+- i18n regression sweep, ahead of this domain's own public-release pass: wrapped the
+  `ValidationError` raised on invalid JSON in `EncryptedJSONField` (`fields.py`), and the two
+  fleet-API error strings in `CredentialDetailView` (`views.py` — "Credential already exists"
+  and "Credential deletion is disabled on this server."), which had been left unwrapped
+  intentionally to match a sibling-domain convention. That convention was corrected during the
+  taskserver wave's own i18n pass after confirming every known Tier 1 client branches purely on
+  HTTP status code and never parses the JSON body text for control flow, so wrapping these is
+  safe. Everything else in the package — `models.py`, `admin.py`, `apps.py`, `serializers.py` —
+  was already fully wrapped from an earlier pass.
+
 ## 2026.08.30.01
 
 - Disabled-client/disabled-credential styling in the "Authorised Credentials"

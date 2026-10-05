@@ -17,6 +17,7 @@ import json
 import os
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 def _get_fernet():
@@ -74,7 +75,7 @@ class EncryptedJSONField(models.TextField):
             except (ValueError, TypeError):
                 from django.core.exceptions import ValidationError
                 raise ValidationError(
-                    "Enter a valid JSON value.", code="invalid"
+                    _("Enter a valid JSON value."), code="invalid"
                 )
         return value
 
