@@ -1,5 +1,15 @@
 # Ophix Creds Release Notes
 
+## 2026.10.05.04
+
+- Fixed the `Tier 2 usage` example in the `credentials` inline doc: `from ophix_cred_client
+  import get_cred` was never valid — the pip package `ophix-cred-client` strips its `ophix-`
+  prefix for the actual Python module name (`cred_client`), and nothing is re-exported at the
+  package root, so even the correctly-spelled version would have raised `ImportError`. Found
+  while sweeping git history for a public-release pass; `cred_client.core.get_cred`'s own
+  docstring already documents the correct form. Now reads `from cred_client.core import
+  get_cred`.
+
 ## 2026.10.05.03
 
 - Added the `Programming Language :: Python :: 3.14` classifier, after real verification

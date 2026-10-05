@@ -181,7 +181,7 @@ When you link a client to a credential, the `enabled` checkbox on the link contr
 Tier 2 clients (scripts and services that consume credentials) import directly from the client library. They do not communicate with the server directly.
 
 ```python
-from ophix_cred_client import get_cred
+from cred_client.core import get_cred
 
 # Fetch the credential whose name is stored in the DB_PROD_CRED_NAME env var
 secret = get_cred("DB_PROD_CRED_NAME")
