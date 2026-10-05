@@ -1,66 +1,16 @@
 # ophix-creds
 
-Credentials domain plugin for [ophix-server-base](https://github.com/ophixproject/ophix-server-base).
+**One place to store fleet secrets, instead of one more copy in every server's `.env` file.**
 
-Stores named JSON secrets and distributes them to authorised fleet clients
-over HTTPS with token + IP authentication. Secrets are never persisted on
-the client — they are fetched on demand and used in memory only.
+If your deploy scripts and server configs have ended up with database passwords, API keys, and other secrets copied onto every host that happens to need them, `ophix-creds` gives your fleet one central place to store them instead. Clients fetch a named secret on demand over HTTPS — authenticated with a per-client token and IP check — and hold it in memory only; nothing is written to disk or cached locally on the client side.
+
+Access is granted per client, per credential: a client can be given read, update, delete, or no access at all to any given secret, and any grant can be revoked instantly without touching the credential itself. Secrets are encrypted at rest on the server.
 
 ---
 
 ## Installation
 
-```bash
-pip install ophix-creds
-```
-
-Recommended extras:
-
-```bash
-pip install ophix-creds ophix-docs venv-cmds
-```
-
-- `ophix-docs` — inline documentation in the admin UI
-- `venv-cmds` — lists available venv commands and checks for package updates
-- A theme pack (e.g. `ophix-theme-example`) can be added for custom branding; the built-in Ophix theme is active on fresh installs by default
-
-See [Guided installation](#guided-installation) below.
-
----
-
-## Guided installation
-
-The recommended deployment path uses the three-step guided installer. Substitute
-`credserver` with your preferred slug throughout.
-
-### Step 1 — configure
-
-```bash
-ophix-manage configure_install credserver
-```
-
-Interactive wizard. Prompts for install directory, hostname, TLS certificate paths,
-database connection, superuser credentials, and admin theme. The `ophix-creds` plugin
-contributes a prompt to generate `CRED_ENCRYPTION_KEY`.
-
-### Step 2 — install
-
-```bash
-ophix-manage run_install credserver
-```
-
-Creates the directory structure, copies TLS files, generates nginx and systemd configs,
-runs `migrate` and `collectstatic`, creates the superuser, and activates the theme.
-
-### Step 3 — system integration (as root)
-
-```bash
-sudo bash credserver_sudo_install.sh
-```
-
-Sets file ownership, installs the nginx config and systemd service, and starts the server.
-
-For full details see the [ophix-server-base README](https://github.com/ophixproject/ophix-server-base).
+See [installation.md](installation.md) for the full step-by-step guide — service user, TLS setup, the guided installer, and getting the service running under nginx and systemd.
 
 ---
 
@@ -86,7 +36,7 @@ ophix-manage generate_config --append
 - `Credential` model — named JSON secret with `enabled` flag
 - `ClientCredential` join model — per-client permissions
   (`enabled`, `can_update`, `can_delete`, `can_share`)
-- `GET/POST/PUT/DELETE /api/credentials/<n>/` API endpoints
+- `GET/POST/PUT/DELETE /api/credentials/<name>/` API endpoints
 - Django admin with inline `ClientCredential` management and linked-artifact columns
 - Access audit logging via `ophix.core.audit`
 - Built-in documentation (loaded by `update_docs` if `ophix-docs` is installed)
@@ -120,11 +70,3 @@ ophix-manage update_docs --include-app-docs ophix.core,ophix_creds,ophix_docs
 
 See [ophix-docs](https://github.com/ophixproject/ophix-docs) for the full list of
 documentation management commands.
-
----
-
-## Themes
-
-Install a theme alongside this plugin to customise the admin interface appearance.
-See [ophix-theme-tools](https://github.com/ophixproject/ophix-theme-tools) for
-available themes and installation instructions.
