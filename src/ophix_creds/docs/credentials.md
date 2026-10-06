@@ -97,10 +97,10 @@ pip install ophix-cred-client
 
 ```bash
 # One step
-cred-client quickstart https://credserver.internal my-client-name
+cred-client quickstart {{ servr_url }} my-client-name
 
 # Step by step
-cred-client set server https://credserver.internal
+cred-client set server {{ servr_url }}
 cred-client download ca-cert
 cred-client register my-client-name
 ```
