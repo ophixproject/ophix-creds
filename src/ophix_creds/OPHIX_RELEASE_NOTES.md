@@ -1,5 +1,13 @@
 # Ophix Creds Release Notes
 
+## Unreleased
+
+- Added `get_doc_tokens()` hook, discovered by `ophix-docs` (if installed) for
+  `{{ token }}` substitution in shared markdown. Contributes `client_package`
+  (`ophix-cred-client`) and `client_command` (`cred-client`) so the generic
+  Client Quickstart doc in `ophix-server-base` can render this domain's correct
+  example instead of staying generic.
+
 ## 2026.10.05.04
 
 - Fixed the `Tier 2 usage` example in the `credentials` inline doc: `from ophix_cred_client

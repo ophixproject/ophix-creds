@@ -87,6 +87,17 @@ def install_run(conf, command):
     command.stdout.write(command.style.SUCCESS("  CRED_ENCRYPTION_KEY written to .env\n"))
 
 
+def get_doc_tokens():
+    """
+    Optional hook discovered by ophix-docs (if installed), for {{ token }}
+    substitution in shared markdown like the Client Quickstart doc.
+    """
+    return {
+        "client_package": "ophix-cred-client",
+        "client_command": "cred-client",
+    }
+
+
 def get_revisions_targets():
     """
     Optional hook discovered by ophix-revisions (if installed). stable=False
