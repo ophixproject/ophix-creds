@@ -1,6 +1,6 @@
 # Ophix Creds Release Notes
 
-## Unreleased
+## 2026.10.07.02
 
 - `get_doc_tokens()` now also contributes `client_venv` (`.cred-env`) — a
   suggested venv directory name for this domain's client, distinct per domain
