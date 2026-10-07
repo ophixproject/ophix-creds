@@ -6,6 +6,9 @@
   suggested venv directory name for this domain's client, distinct per domain
   so clients for different Ophix servers/domains can coexist in the same
   parent folder without name collisions.
+- `get_doc_tokens()` now also contributes `client_env` (`.cred.env`) — the
+  actual env file this client writes, confirmed against `cred_client.core`'s
+  own `ENV_FILE_NAME` constant rather than assumed.
 
 ## 2026.10.07.01
 

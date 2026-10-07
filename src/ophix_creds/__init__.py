@@ -96,6 +96,7 @@ def get_doc_tokens():
         "client_package": "ophix-cred-client",
         "client_command": "cred-client",
         "client_venv": ".cred-env",
+        "client_env": ".cred.env",
     }
 
 
