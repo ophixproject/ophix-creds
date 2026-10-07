@@ -1,5 +1,12 @@
 # Ophix Creds Release Notes
 
+## Unreleased
+
+- `get_doc_tokens()` now also contributes `client_venv` (`.cred-env`) — a
+  suggested venv directory name for this domain's client, distinct per domain
+  so clients for different Ophix servers/domains can coexist in the same
+  parent folder without name collisions.
+
 ## 2026.10.07.01
 
 - Added `get_doc_tokens()` hook, discovered by `ophix-docs` (if installed) for
