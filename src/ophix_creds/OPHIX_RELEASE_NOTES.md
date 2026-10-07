@@ -9,6 +9,10 @@
 - `get_doc_tokens()` now also contributes `client_env` (`.cred.env`) — the
   actual env file this client writes, confirmed against `cred_client.core`'s
   own `ENV_FILE_NAME` constant rather than assumed.
+- `get_doc_tokens()` now also contributes `client_env_prefix` (`CREDSERVER`) —
+  the env var name prefix used inside `client_env` (e.g. `CREDSERVER_URL`),
+  confirmed against `cred_client`'s own `server_url_key` config value rather
+  than assumed.
 
 ## 2026.10.07.01
 
