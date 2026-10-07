@@ -13,6 +13,10 @@
   the env var name prefix used inside `client_env` (e.g. `CREDSERVER_URL`),
   confirmed against `cred_client`'s own `server_url_key` config value rather
   than assumed.
+- `get_doc_tokens()` now also contributes `artifact_name` (`Credential`) and
+  `artifact_name_lower` (`credential`) — the domain-specific term for what a
+  client gets linked to, confirmed against the `Credential` model's own
+  `verbose_name` rather than assumed.
 
 ## 2026.10.07.01
 

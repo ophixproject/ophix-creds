@@ -98,6 +98,8 @@ def get_doc_tokens():
         "client_venv": ".cred-env",
         "client_env": ".cred.env",
         "client_env_prefix": "CREDSERVER",
+        "artifact_name": "Credential",
+        "artifact_name_lower": "credential",
     }
 
 
