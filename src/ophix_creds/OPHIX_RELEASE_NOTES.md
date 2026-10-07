@@ -1,6 +1,6 @@
 # Ophix Creds Release Notes
 
-## Unreleased
+## 2026.10.07.01
 
 - Added `get_doc_tokens()` hook, discovered by `ophix-docs` (if installed) for
   `{{ token }}` substitution in shared markdown. Contributes `client_package`
