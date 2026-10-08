@@ -1,5 +1,11 @@
 # Ophix Creds Release Notes
 
+## 2026.10.08.01
+
+- `credential-backup.md`'s link to `ophix-server-base`'s "Server Backup and Migration" doc
+  now points at the real crosslink redirect URL instead of a bare relative slug that never
+  resolved to anything (`ophix-docs` never implemented the crosslink feature until now).
+
 ## 2026.10.07.02
 
 - `get_doc_tokens()` now also contributes `client_venv` (`.cred-env`) — a

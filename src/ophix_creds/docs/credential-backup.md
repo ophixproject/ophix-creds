@@ -19,7 +19,7 @@ Credential imports reference clients by name. The full restore sequence for a cr
 import_hosts  →  import_clients  →  import_creds
 ```
 
-Run `import_hosts` and `import_clients` (from `ophix-server-base`) before importing credentials with client links. See [Server Backup and Migration](server-backup) for the base-layer commands.
+Run `import_hosts` and `import_clients` (from `ophix-server-base`) before importing credentials with client links. See [Server Backup and Migration](/admin/ophix_docs/docpage/crosslink/ophix.core/server-backup/) for the base-layer commands.
 
 If you are only restoring credentials themselves (no client links), `import_creds` can run independently.
 
