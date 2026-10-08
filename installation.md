@@ -229,5 +229,6 @@ That's it - you're done. The admin UI should now be live at `https://<your-hostn
   installed) for how to bootstrap a client against this server.
 - For `ophix-creds` specific instructions go to **Documentation → Search** and search for
   `cred-client`. You will need to install
-  [ophix-cred-client](https://github.com/ophixproject/ophix-cred-client) on each machine that
-  needs to fetch credentials.
+  [ophix-cred-client](https://github.com/ophixproject/ophix-cred-client) in each virtual
+  environment that needs to fetch credentials. A single user account can have multiple clients,
+  as long as each one has its own venv.
