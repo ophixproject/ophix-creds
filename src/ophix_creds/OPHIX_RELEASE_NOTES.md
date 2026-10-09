@@ -1,5 +1,21 @@
 # Ophix Creds Release Notes
 
+## Unreleased
+
+- `export_creds`/`import_creds` gained a `--stable` flag, using the new
+  `ophix.core.crypto` module's deterministic `stable-aesgcmsiv` cipher
+  (from `ophix-server-base` 2026.10.09.03) when combined with
+  `--passphrase`/`--passphrase-env`. Unchanged secrets now re-encrypt to
+  identical ciphertext on this server, which is what lets `ophix-revisions`
+  produce an empty git diff when nothing real changed. Normal (non-stable)
+  exports are unaffected — still Fernet, still random per run.
+- `client_links` export is now explicitly ordered (`client__host__name`,
+  `client__name`) — was previously unordered, a latent nondeterminism bug
+  independent of `--stable`.
+- `get_revisions_targets()`'s `creds` entry now declares `"stable": True`.
+- `cryptography` dependency floor raised `>=41.0` → `>=42.0`; `ophix-server-base`
+  floor raised to `>=2026.10.09.03` (both required by the new cipher).
+
 ## 2026.10.08.01
 
 - `credential-backup.md`'s link to `ophix-server-base`'s "Server Backup and Migration" doc

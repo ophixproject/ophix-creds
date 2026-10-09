@@ -105,9 +105,7 @@ def get_doc_tokens():
 
 def get_revisions_targets():
     """
-    Optional hook discovered by ophix-revisions (if installed). stable=False
-    until Phase B (deterministic encryption) lands — export_creds's Fernet
-    encryption is non-deterministic by design, so --stable isn't meaningful here yet.
+    Optional hook discovered by ophix-revisions (if installed).
     """
     return [
         {
@@ -115,6 +113,6 @@ def get_revisions_targets():
             "app_label": "ophix_creds",
             "export_command": "export_creds",
             "encrypted": True,
-            "stable": False,
+            "stable": True,
         },
     ]

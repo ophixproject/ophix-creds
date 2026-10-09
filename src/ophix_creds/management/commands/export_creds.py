@@ -13,6 +13,11 @@ Use --include-client-links to also export the ClientCredential join table
 On import, referenced clients and hosts must already exist — run import_hosts
 and import_clients first when doing a full server restore.
 
+Use --stable together with --passphrase/--passphrase-env to produce
+deterministic output (unchanged secrets always encrypt to the same
+ciphertext on this server) — intended for ophix-revisions' git-backed
+history, where an unchanged credential should produce an empty diff.
+
 Examples
 --------
 Export with encrypted secrets (recommended):
@@ -21,23 +26,20 @@ Export with encrypted secrets (recommended):
 Export with client links included:
     ophix-manage export_creds --output-file creds.json --passphrase "secret" --include-client-links
 
+Deterministic export (for ophix-revisions):
+    ophix-manage export_creds --output-file creds.json --passphrase-env BACKUP_PASSPHRASE --stable
+
 Preview without writing:
     ophix-manage export_creds --output-file creds.json --passphrase "secret" --dry-run
 """
 
-import base64
 import json
 import os
 from pathlib import Path
 
 from django.core.management.base import BaseCommand, CommandError
 
-
-def _derive_key(passphrase: str, salt: bytes) -> bytes:
-    from cryptography.hazmat.primitives import hashes
-    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-    kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=480000)
-    return base64.urlsafe_b64encode(kdf.derive(passphrase.encode()))
+from ophix.core import crypto
 
 
 def _build_meta(domain: str, command: str) -> dict:
@@ -64,12 +66,9 @@ def _build_meta(domain: str, command: str) -> dict:
     }
 
 
-def _serialize(credential, fernet=None, include_links=False):
+def _serialize(credential, cipher=None, include_links=False):
     secret_str = json.dumps(credential.secret_json)
-    if fernet:
-        secret_value = fernet.encrypt(secret_str.encode()).decode()
-    else:
-        secret_value = secret_str
+    secret_value = cipher.encrypt(secret_str) if cipher else secret_str
 
     record = {
         "name":        credential.name,
@@ -80,7 +79,9 @@ def _serialize(credential, fernet=None, include_links=False):
 
     if include_links:
         links = []
-        for link in credential.client_links.select_related("client__host").all():
+        for link in credential.client_links.select_related("client__host").order_by(
+            "client__host__name", "client__name"
+        ):
             links.append({
                 "client":     link.client.name,
                 "host":       link.client.host.name,
@@ -126,6 +127,15 @@ class Command(BaseCommand):
             help="Also export ClientCredential join records (client access permissions).",
         )
         parser.add_argument(
+            "--stable",
+            action="store_true",
+            help=(
+                "Produce deterministic output — unchanged secrets always encrypt "
+                "to the same ciphertext on this server. For use with ophix-revisions "
+                "or any other git-backed history of this export."
+            ),
+        )
+        parser.add_argument(
             "--dry-run",
             action="store_true",
             help="Show how many credentials would be exported without writing anything.",
@@ -159,6 +169,7 @@ class Command(BaseCommand):
                     break
                 self.stderr.write("Passphrases do not match — try again.")
         include_links  = options["include_client_links"]
+        stable         = options["stable"]
         dry_run        = options["dry_run"]
         quiet          = options["quiet"]
 
@@ -179,13 +190,7 @@ class Command(BaseCommand):
         if not output_path.parent.exists():
             raise CommandError(f"Output directory does not exist: {output_path.parent}")
 
-        fernet = None
-        salt_b64 = None
-        if passphrase:
-            from cryptography.fernet import Fernet
-            salt = os.urandom(16)
-            salt_b64 = base64.urlsafe_b64encode(salt).decode()
-            fernet = Fernet(_derive_key(passphrase, salt))
+        cipher = crypto.build_export_cipher(passphrase, stable=stable)
 
         if not passphrase and not quiet:
             self.stderr.write(self.style.WARNING(
@@ -195,20 +200,22 @@ class Command(BaseCommand):
 
         payload = {
             "version":              1,
-            "meta":                 _build_meta("creds", "export_creds"),
-            "encrypted":            fernet is not None,
-            "salt":                 salt_b64,
+            "encrypted":            cipher is not None,
+            "cipher":               cipher.name if cipher else None,
+            "salt":                 cipher.salt_b64 if cipher else None,
             "include_client_links": include_links,
             "credentials":          [
-                _serialize(c, fernet, include_links) for c in credentials
+                _serialize(c, cipher, include_links) for c in credentials
             ],
         }
+        if not stable:
+            payload["meta"] = _build_meta("creds", "export_creds")
 
         with output_path.open("w", encoding="utf-8") as f:
-            json.dump(payload, f, indent=2)
+            json.dump(payload, f, indent=2, sort_keys=stable)
 
         if not quiet:
-            enc_note = " (secrets encrypted)" if fernet else " (secrets plaintext)"
+            enc_note = " (secrets encrypted)" if cipher else " (secrets plaintext)"
             link_note = ", with client links" if include_links else ""
             self.stdout.write(self.style.SUCCESS(
                 f"Exported {count} credential(s) to {output_path}{enc_note}{link_note}."

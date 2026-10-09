@@ -39,6 +39,12 @@ ophix-manage export_creds --output-file creds.json --passphrase 'your-passphrase
 ophix-manage export_creds --output-file creds.json --passphrase 'your-passphrase' --include-client-links
 ```
 
+**Deterministic export (for ophix-revisions or any other git-backed history):**
+
+```bash
+ophix-manage export_creds --output-file creds.json --passphrase-env BACKUP_PASSPHRASE --stable
+```
+
 **Preview without writing:**
 
 ```bash
@@ -52,8 +58,9 @@ Without `--passphrase`, secrets are written as plaintext JSON. The command print
 | Flag | Description |
 | --- | --- |
 | `--output-file FILE` | _(required)_ Destination path |
-| `--passphrase PASSPHRASE` | Encrypt secret values using a PBKDF2-derived Fernet key |
+| `--passphrase PASSPHRASE` | Encrypt secret values using a passphrase-derived key |
 | `--include-client-links` | Also export `ClientCredential` join records (client access and permission flags) |
+| `--stable` | Produce deterministic, diff-friendly output instead of the default random encryption |
 | `--dry-run` | Show how many credentials would be exported without writing |
 | `--quiet` | Suppress all output |
 
@@ -70,7 +77,12 @@ With `--include-client-links`, each record also includes its `ClientCredential` 
 
 ### How secret encryption works
 
-Each `secret_json` value is serialised to JSON, then encrypted individually using a Fernet key derived from the passphrase via PBKDF2-HMAC-SHA256 (480,000 iterations). A random 16-byte salt is generated per export and stored in the file. The passphrase is not stored — you must provide it again on import.
+Each `secret_json` value is serialised to JSON, then encrypted individually using a key derived from the passphrase via PBKDF2-HMAC-SHA256 (480,000 iterations). The passphrase is not stored — you must provide it again on import.
+
+Two cipher schemes are available, recorded in the export file's `cipher` field so `import_creds` always picks the right one automatically:
+
+- **`fernet`** (default) — a random 16-byte salt is generated per export, and Fernet's own per-value random IV means every run produces different ciphertext, even for unchanged secrets. The right choice for a one-off backup.
+- **`stable-aesgcmsiv`** (with `--stable`) — uses this server's fixed, per-install `STABLE_EXPORT_SALT` and a nonce derived from the plaintext itself, so an unchanged secret always re-encrypts to identical ciphertext. This is what lets a git-backed history (`ophix-revisions`) show an empty diff when nothing real changed. Trade-off: two secrets that happen to share the same value become visibly identical in ciphertext, within or across exports from this one server — never across servers, since each server's salt is its own.
 
 This transport encryption is independent of the server's `CRED_ENCRYPTION_KEY`. The import command decrypts using the export passphrase, then re-encrypts at rest using whatever `CRED_ENCRYPTION_KEY` is configured on the target server. You can restore to a server with a different encryption key without any extra steps.
 

@@ -26,19 +26,13 @@ Preview without writing:
     ophix-manage import_creds --input-file creds.json --passphrase "secret" --dry-run
 """
 
-import base64
 import json
 import os
 from pathlib import Path
 
 from django.core.management.base import BaseCommand, CommandError
 
-
-def _derive_key(passphrase: str, salt: bytes) -> bytes:
-    from cryptography.hazmat.primitives import hashes
-    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-    kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=480000)
-    return base64.urlsafe_b64encode(kdf.derive(passphrase.encode()))
+from ophix.core import crypto
 
 
 class Command(BaseCommand):
@@ -125,23 +119,23 @@ class Command(BaseCommand):
 
         encrypted = payload.get("encrypted", False)
 
-        # Validate passphrase and build Fernet instance before touching the DB.
-        fernet = None
+        # Validate passphrase and build the cipher before touching the DB.
+        cipher = None
         if encrypted:
             if not passphrase:
                 raise CommandError(
                     "This file contains encrypted secrets. Provide --passphrase to import."
                 )
             try:
-                from cryptography.fernet import Fernet, InvalidToken
-                salt = base64.urlsafe_b64decode(payload["salt"])
-                fernet = Fernet(_derive_key(passphrase, salt))
+                cipher = crypto.build_import_cipher(
+                    payload.get("cipher"), passphrase, payload.get("salt")
+                )
                 # Validate key against the first secret we can find.
                 for rec in payload["credentials"]:
                     if rec.get("secret_json"):
-                        fernet.decrypt(rec["secret_json"].encode())
+                        cipher.decrypt(rec["secret_json"])
                         break
-            except InvalidToken:
+            except crypto.DecryptionError:
                 raise CommandError("Incorrect passphrase — could not decrypt secrets.")
             except Exception as exc:
                 raise CommandError(f"Failed to initialise decryption: {exc}")
@@ -174,11 +168,10 @@ class Command(BaseCommand):
 
             # Decrypt and parse secret_json.
             raw_secret = rec.get("secret_json", "")
-            if fernet and raw_secret:
+            if cipher and raw_secret:
                 try:
-                    from cryptography.fernet import InvalidToken
-                    raw_secret = fernet.decrypt(raw_secret.encode()).decode()
-                except InvalidToken:
+                    raw_secret = cipher.decrypt(raw_secret)
+                except crypto.DecryptionError:
                     self.stderr.write(f"  {name}: secret decryption failed — skipped.")
                     skipped += 1
                     continue
