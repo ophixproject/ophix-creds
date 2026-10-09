@@ -1,5 +1,15 @@
 # Ophix Creds Release Notes
 
+## Unreleased
+
+- `get_revisions_targets()`'s `creds` entry now declares a precise `"models"` list
+  (`["ophix_creds.credential"]`), narrowing which saves trigger a revisions re-export
+  of this target to `Credential` only — a `ClientCredential` join-record save never
+  did (and still doesn't) trigger it either way, since the revisions worker never
+  passes `--include-client-links`, but the target previously relied on the coarser
+  `app_label`-only fallback to get that right by coincidence. Requires
+  `ophix-revisions>=2026.10.09.03`.
+
 ## 2026.10.09.01
 
 - `export_creds`/`import_creds` gained a `--stable` flag, using the new

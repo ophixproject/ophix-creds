@@ -111,6 +111,10 @@ def get_revisions_targets():
         {
             "name": "creds",
             "app_label": "ophix_creds",
+            # Precise model match — export_creds only exports Credential rows
+            # by default (ClientCredential join records need --include-client-links,
+            # which the revisions worker never passes).
+            "models": ["ophix_creds.credential"],
             "export_command": "export_creds",
             "encrypted": True,
             "stable": True,
