@@ -1,6 +1,6 @@
 # Ophix Creds Release Notes
 
-## Unreleased
+## 2026.10.09.01
 
 - `export_creds`/`import_creds` gained a `--stable` flag, using the new
   `ophix.core.crypto` module's deterministic `stable-aesgcmsiv` cipher
