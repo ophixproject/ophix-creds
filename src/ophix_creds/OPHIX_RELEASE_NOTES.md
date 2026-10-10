@@ -1,6 +1,6 @@
 # Ophix Creds Release Notes
 
-## Unreleased
+## 2026.10.09.02
 
 - `get_revisions_targets()`'s `creds` entry now declares a precise `"models"` list
   (`["ophix_creds.credential"]`), narrowing which saves trigger a revisions re-export
