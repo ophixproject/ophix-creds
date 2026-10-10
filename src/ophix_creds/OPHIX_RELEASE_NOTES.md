@@ -1,5 +1,15 @@
 # Ophix Creds Release Notes
 
+## 2026.10.10.01
+
+- `get_revisions_targets()`'s `creds` entry now declares `records_key="credentials"`
+  and `include_links_kwarg="include_client_links"`, making `creds` eligible for
+  `ophix-revisions`' new cherry-pick restore — an operator can select individual
+  credentials to restore from a snapshot instead of the whole target, and each
+  selected credential's `ClientCredential` link data now travels with it
+  automatically (previously never captured in revisions history at all). Requires
+  `ophix-revisions>=2026.10.10.06` to take effect.
+
 ## 2026.10.09.02
 
 - `get_revisions_targets()`'s `creds` entry now declares a precise `"models"` list
