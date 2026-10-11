@@ -10,14 +10,14 @@ Access is granted per client, per credential: a client can be given read, update
 
 ## Installation
 
-See [installation.md](installation.md) for the full step-by-step guide — service user, TLS setup, the guided installer, and getting the service running under nginx and systemd.
+See [installation.md](https://github.com/ophixproject/ophix-creds/blob/main/installation.md) for the full step-by-step guide — service user, TLS setup, the guided installer, and getting the service running under nginx and systemd.
 
 ---
 
 ## Routine upgrades
 
 The guided installer generates `ophixcredserver-update.sh` (Step 4 in
-[installation.md](installation.md)) — a single script that checks for and installs package
+[installation.md](https://github.com/ophixproject/ophix-creds/blob/main/installation.md)) — a single script that checks for and installs package
 updates, then runs `migrate`, `collectstatic`, `generate_config --append` (picks up any new
 `.env` settings automatically), refreshes documentation, and refreshes the Plugin Versions
 table. Run it as the service user, not root:
