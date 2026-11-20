@@ -144,6 +144,9 @@ The wizard is interactive and asks for:
 - Service user and group (defaults to `ophix`/`ophix`, matching Step 0)
 - nginx config directory and enabled directory - defaults to the Debian/Ubuntu layout; see the
   Prerequisites note above if you're on a distro that lays nginx config out differently
+- Trusted upstream proxies - leave empty unless clients reach this server through a load
+  balancer or reverse proxy; if they do, enter that proxy's addresses/CIDRs (see Server
+  Installation's "Client IP and upstream proxies" note)
 - TLS certificate and private key paths - point these at the files from the Prerequisites step;
   the wizard validates the certificate actually covers the hostname you gave, and warns if not
 - Database engine and connection details, with a live connection test before anything is saved.
