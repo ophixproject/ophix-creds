@@ -1,6 +1,6 @@
 # Ophix Creds Release Notes
 
-## Unreleased
+## 2026.11.20.01
 
 - Docs only: `installation.md` now mentions the new "trusted upstream proxies" prompt in
   `configure_install` (added in `ophix-server-base` 2026.11.20.01). Leave it blank unless
