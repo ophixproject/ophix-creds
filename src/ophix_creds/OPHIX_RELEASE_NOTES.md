@@ -1,5 +1,12 @@
 # Ophix Creds Release Notes
 
+## Unreleased
+
+- Docs only: `installation.md` now mentions the new "trusted upstream proxies" prompt in
+  `configure_install` (added in `ophix-server-base` 2026.11.20.01). Leave it blank unless
+  the server sits behind a load balancer or reverse proxy. Version bumped to match
+  `ophix-server-base`.
+
 ## 2026.10.11.01
 
 - `README.md`'s two `installation.md` links were bare relative paths, which PyPI's rendered
